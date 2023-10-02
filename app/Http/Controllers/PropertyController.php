@@ -13,7 +13,7 @@ class PropertyController extends Controller
 {
     public function index(SearchPropertiesRequest $request)
     {
-        $query = Property::query()->with('options');
+        $query = Property::query()->with('pictures')->with('options');
         // si sur la requete j'ai un prix je modifie query si le prix est inferieur ou egal à mon budget demandé
         if($request->validated('price')){
             $query = $query->where('price', '<=', $request->validated('price'));

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PropertyFormRequest;
 use App\Models\Option;
+use App\Models\Picture;
 use App\Models\Property;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
@@ -50,6 +51,7 @@ class PropertyController extends Controller
         // creér un nv bien
         $property = Property::create($request->validated());
         $property->options()->sync($request->validated('options'));
+        $property->attachFilles($request->validated('pictures'));
         return to_route('admin.property.index')->with('success','Le bien a bien été créé');
     }
 
@@ -72,8 +74,8 @@ class PropertyController extends Controller
         // syncronisation des donnée valides
         $property->options()->sync($request->validated('options'));
         $property->update($request->validated());
+        $property->attachFilles($request->validated('pictures'));
         return to_route('admin.property.index')->with('success','Le bien a bien été modifier');
-
     }
 
     /**
@@ -81,6 +83,8 @@ class PropertyController extends Controller
      */
     public function destroy(Property $property)
     {
+        // suppression d'image en meme temps avec un bien
+        Picture::destroy($property->pictures()->pluck('id'));
         $property->delete();
         return to_route('admin.property.index')->with('success','Le bien a bien été supprimer');
     }

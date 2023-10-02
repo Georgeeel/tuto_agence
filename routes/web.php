@@ -3,9 +3,11 @@
 use App\Models\Option;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\OptionController;
+use App\Http\Controllers\Admin\PictureController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PropertyController as ControllersPropertyController;
 use App\Models\Property;
 
@@ -41,12 +43,17 @@ Route::delete('/logout',[AuthController::class, 'logout'])
     // middleware admin / faut être connecté 
     ->middleware('auth')
     ->name('logout');
-
-
+Route::get('/images/{path}', [ImageController::class, 'show'])->where('path','.*');
 // route prefixé avec le nom admin
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function(){
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() use ($idRegex)
+{
     // route resource  prendre en compte tout les action  d'un CRUD dans une ligne avec le controller
     Route::resource('property', PropertyController::class)->except(['show']);
     Route::resource('option', OptionController::class)->except(['show']);
+    Route::delete('picture/{picture}', [PictureController::class, 'destroy'])
+        ->name('picture.destroy')
+        ->where([
+            'picture' => $idRegex,
+        ]);
 
 });

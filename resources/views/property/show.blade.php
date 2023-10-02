@@ -5,10 +5,34 @@
 @section('content')
 <!-- description de biens -->
 <div class="container mt-4">
-    <h1>{{ $property->title }}</h1>
-    <h2>{{ $property->rooms }} pièces - {{ $property->surface }}m²</h2>
-    <div class="text-primary fw-bold">
-        {{number_format($property->price, thousands_separator: ' ')}} €
+    <div class="row">
+        <div class="col-8">
+            <div id="carousel" class="carousel slide" data-bs-ride="carousel" style="max-width: 800px ;">
+            <div class="carousel-inner">
+                <!-- liste pictures -->
+                @foreach($property->pictures as $k => $picture)
+                    <div class="carousel-item {{ $k == 0 ? 'active' : '' }}">
+                        <img src="{{ $picture->getImageUrl(800,530) }}" alt="">
+                    </div>
+                @endforeach
+            </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        </div>
+        </div>
+        <div class="col-4">
+            <h1>{{ $property->title }}</h1>
+            <h2>{{ $property->rooms }} pièces - {{ $property->surface }}m²</h2>
+            <div class="text-primary fw-bold">
+                {{number_format($property->price, thousands_separator: ' ')}} €
+            </div>
+        </div>
     </div>
 
     <hr>
